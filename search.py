@@ -72,6 +72,54 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s, s, w, s, w, w, s, w]
 
+
+def searchHelper(problem, fringe):
+    
+    expanded = set()
+    fringe.push([(problem.getStartState(), "Stop" , 0)])
+
+    while ~ fringe.isEmpty():
+        path = fringe.pop()
+
+        currState = path[len(path)-1][0]
+        
+        if problem.isGoalState(currState):
+            return [x[1] for x in path][1:]
+              
+        if currState in expanded:
+              continue
+
+        expanded.add(currState)
+              
+        for successor in problem.getSuccessors(currState):
+            if successor in expanded:
+                continue
+            successorPath = path[:]
+            successorPath.append(successor)
+            fringe.push(successorPath)
+
+    """
+    expanded = set()
+    fringe.push((problem.getStartState(), [], 0))
+    while ~ fringe.isEmpty():
+        path = fringe.pop()
+        
+        if problem.isGoalState(path[0]):
+            return path[1]
+        
+        if path[0] in expanded:
+            continue
+
+        expanded.add(path[0])
+
+        for state, direction, cost in problem.getSuccessors(path[0]):
+            if state in expanded:
+                continue
+            fringe.push((state, path[1] + [direction], cost))
+    
+    """
+    
+
 def depthFirstSearch(problem):
     """
     Search the deepest nodes in the search tree first.
@@ -87,17 +135,57 @@ def depthFirstSearch(problem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    
+    # initialize the fringe and expanded list
+    fringe = util.Stack()
+    return searchHelper(problem, fringe)
+
+
+    "util.raiseNotDefined()"
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    fringe = util.Queue()
+    return searchHelper(problem, fringe)
+
+    #util.raiseNotDefined()
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    """ 
+    The general function using lambda should work, cannot pass autograder 
+    for some string exception. Not sure why. Commented out for now.
+    """
+
+    #cumulativeCost = lambda a : problem.getCostOfActions(x[1] for x in a)
+    #fringe = util.PriorityQueueWithFunction(cumulativeCost)
+    #return searchHelper(problem, fringe)
+    
+    
+    expanded = set()
+    fringe = util.PriorityQueue()
+    fringe.push((problem.getStartState(), [], 0), 0)
+    while ~ fringe.isEmpty():
+        path = fringe.pop()
+                
+        if problem.isGoalState(path[0]):
+            return path[1]
+        
+        if path[0] in expanded:
+            continue
+
+        expanded.add(path[0])
+
+        for state, direction, cost in problem.getSuccessors(path[0]):
+            if state in expanded:
+                continue
+            fringe.push((state, path[1] + [direction], path[2] + cost), path[2] + cost)
+    
+    #util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
     """
@@ -109,7 +197,34 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    """ 
+    Commented out for the same reason above. Cannot pass autograder.
+    """
+
+    #cumulativeCost = lambda a: problem.getCostOfActions([x[1] for x in a]) + heuristic(a[len(a)-1][0], problem)
+    #fringe = util.PriorityQueueWithFunction(cumulativeCost)
+    #return searchHelper(problem, fringe)  
+
+    expanded = set()
+    fringe = util.PriorityQueue()
+    fringe.push((problem.getStartState(), [], 0), 0)
+    while ~ fringe.isEmpty():
+        path = fringe.pop()
+                
+        if problem.isGoalState(path[0]):
+            return path[1]
+        
+        if path[0] in expanded:
+            continue
+
+        expanded.add(path[0])
+
+        for state, direction, cost in problem.getSuccessors(path[0]):
+            if state in expanded:
+                continue
+            fringe.push((state, path[1] + [direction], path[2] + cost), path[2] + cost + heuristic(state, problem))
+    #util.raiseNotDefined()
 
 
 # Abbreviations
