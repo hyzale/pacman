@@ -74,7 +74,7 @@ def tinyMazeSearch(problem):
 
 
 def searchHelper(problem, fringe):
-    
+
     expanded = set()
     fringe.push([(problem.getStartState(), "Stop" , 0)])
 
@@ -157,7 +157,7 @@ def uniformCostSearch(problem):
     "*** YOUR CODE HERE ***"
 
     """ 
-    The general function using lambda should work, cannot pass autograder 
+    The general function using lambda should work(?), cannot pass autograder 
     for some string exception. Not sure why. Commented out for now.
     """
 
