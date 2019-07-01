@@ -402,7 +402,6 @@ def cornersHeuristic(state, problem):
     cornerList = list(corners)
     cornerState = state[1]
     dist = 0
-    print(state[1])
     for corner in cornerState:
         pos = state[0]
         cornerPos = corner[0]
