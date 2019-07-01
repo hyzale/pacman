@@ -288,6 +288,17 @@ class CornersProblem(search.SearchProblem):
         # Please add any code here which you would like to use
         # in initializing the problem
         "*** YOUR CODE HERE ***"
+        self._visited, self._visitedlist = {}, []
+        self.cornersVisited = []
+        for corner in self.corners:
+            if self.startingPosition == corner:
+                self.cornersVisited.append((corner, True))
+            else:
+                self.cornersVisited.append((corner, False))
+        
+        self.cornersVisited = tuple(self.cornersVisited)
+
+
 
     def getStartState(self):
         """
@@ -295,14 +306,22 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return (self.startingPosition, self.cornersVisited)
+
 
     def isGoalState(self, state):
         """
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        
+        isCornerVisited = True
+        for corner in state[1]:
+            isAllVisted = corner[1]
+            if isAllVisted is False:
+                return False
+        return isCornerVisited
+        #util.raiseNotDefined()
 
     def getSuccessors(self, state):
         """
@@ -324,7 +343,24 @@ class CornersProblem(search.SearchProblem):
             #   nextx, nexty = int(x + dx), int(y + dy)
             #   hitsWall = self.walls[nextx][nexty]
 
-            "*** YOUR CODE HERE ***"
+            x,y = state[0]
+            corState = state[1]
+            newCorState = []
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            nextState = (nextx, nexty)
+            hitsWall = self.walls[nextx][nexty]
+            
+            if hitsWall is False:
+                for corner in corState:
+                    position = corner[0]
+                    if nextState == position:
+                        newCorState.append((position, True))
+                    else:
+                        newCorState.append((position, corner[1]))
+                
+                newCorState = tuple(newCorState)
+                successors.append(((nextState, newCorState), action, 1))
 
         self._expanded += 1 # DO NOT CHANGE
         return successors
