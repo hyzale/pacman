@@ -396,9 +396,6 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-
-
-
     cornerList = list(corners)
     cornerState = state[1]
     dist = 0
@@ -406,11 +403,9 @@ def cornersHeuristic(state, problem):
         pos = state[0]
         cornerPos = corner[0]
         if corner[1] is False:
-            dist =  max(dist,(abs(cornerPos[0] - pos[0]) + abs(cornerPos[1] - pos[1])))
+            dist =  max(dist, manhattanDistance(pos, cornerPos))
 
     return dist
-
-
 
     # return 0 # Default to trivial solution
 
@@ -436,11 +431,15 @@ class FoodSearchProblem:
         self._expanded = 0 # DO NOT CHANGE
         self.heuristicInfo = {} # A dictionary for the heuristic to store information
 
-    def getStartState(self):
-        return self.start
 
     def isGoalState(self, state):
         return state[1].count() == 0
+
+    def getStartState(self):
+        return self.start
+
+    def getGameState(self):
+        return self.startingGameState
 
     def getSuccessors(self, state):
         "Returns successor states, the actions they require, and a cost of 1."
@@ -506,7 +505,7 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    maxDistance = 0
+    '''maxDistance = 0
     import math
     #print(dir(problem.walls))
     for foodPosition in foodGrid.asList():
@@ -517,13 +516,49 @@ def foodHeuristic(state, problem):
         #distance = mazeDistance(xy1, xy2, state)
         if distance > maxDistance :
             maxDistance = distance 
-      
+    
+    foodCount = 0
+    for food in foodGrid.asList():
+        if posi
+
     #print(foodGrid.asList())
-    return maxDistance 
+    return maxDistance'''
 
+    ''' I discussed with a friend (but actually not the partner) 
+    who is not actually taking the class during dinner 
+    for some possibility of the heurstic. (Not exactly this one thou)
+    Not sure how to cite using this submission'''
 
+    foodList = foodGrid.asList()
 
+    if len(foodList) == 0:
+        return 0
+
+    closestFood = foodList[0]
+    closestDist = manhattanDistance(position, closestFood)
+    for point in foodList[1:]:
+        dist = manhattanDistance(position, point)
+        if dist < closestDist:
+            closestDist = dist
+            closestFood = point
+    
+    gameState = problem.getGameState()
+
+    distance = mazeDistance(closestFood, position, gameState)
+    foodCount = 0
+    for (x,y) in foodList:
+        flag = 0
+        if x != position[0] and x != closestFood[0]:
+            foodCount = foodCount + 1
+            flag = 1
+        if flag == 0:
+            if y != position[1] and y != closestFood[1]:
+                foodCount = foodCount + 1
+    return distance + foodCount
     #return 0
+
+def manhattanDistance (pointA, pointB):
+    return abs(pointA[0] - pointB[0]) + abs(pointA[1] - pointB[1])
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
@@ -561,15 +596,11 @@ class ClosestDotSearchAgent(SearchAgent):
         fringe.push((problem.getStartState(),[],0))
 
         while ~ fringe.isEmpty():
-        
             path = fringe.pop()
-
             if problem.isGoalState(path[0]):
                 return path[1]
-        
             if path[0] in expanded:
                 continue
-
             expanded.add(path[0])
 
             for state, direction, cost in problem.getSuccessors(path[0]):
