@@ -579,6 +579,9 @@ class ClosestDotSearchAgent(SearchAgent):
 
     def findPathToClosestDot(self, gameState):
         """
+
+
+        
         Returns a path (a list of actions) to the closest dot, starting from
         gameState.
         """
